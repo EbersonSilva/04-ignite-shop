@@ -50,3 +50,12 @@ export default function Home() {
     </HomeContainer>
   )
 }
+
+//Configuração para apresentar  
+export const getServerSideProps =() => {
+  return{
+    props: {
+      list: [1, 2, 3]
+    }
+  }
+}
