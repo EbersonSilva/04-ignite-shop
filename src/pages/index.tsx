@@ -51,9 +51,9 @@ export default function Home() {
   )
 }
 
-//Configuração para apresentar  
-export const getServerSideProps =() => {
-  return{
+//Configuração para apresentar
+export const getServerSideProps = () => {
+  return {
     props: {
       list: [1, 2, 3]
     }
