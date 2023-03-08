@@ -9,6 +9,7 @@ import camiseta3 from '../assets/camisetas/3.png'
 import camiseta4 from '../assets/camisetas/4.png'
 
 import 'keen-slider/keen-slider.min.css'
+import { stripe } from '../lib/stripe'
 
 export default function Home() {
   const [sliderRef] = useKeenSlider({
@@ -51,8 +52,11 @@ export default function Home() {
   )
 }
 
-//Configuração para apresentar
-export const getServerSideProps = () => {
+//Configuração para resnderizar os dados somente depois que todas as informações foram carregadas.
+export const getServerSideProps = async () => {
+  const response = await stripe.products.list()
+
+  console.log(response.data)
   return {
     props: {
       list: [1, 2, 3]
