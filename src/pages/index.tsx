@@ -2,6 +2,7 @@ import Image from 'next/image'
 
 import { useKeenSlider } from 'keen-slider/react'
 import { HomeContainer, Product } from '../styles/pages/home'
+import { GetServerSideProps } from 'next'
 
 import camiseta1 from '../assets/camisetas/1.png'
 import camiseta2 from '../assets/camisetas/2.png'
@@ -11,7 +12,7 @@ import camiseta4 from '../assets/camisetas/4.png'
 import 'keen-slider/keen-slider.min.css'
 import { stripe } from '../lib/stripe'
 
-export default function Home() {
+export default function Home(props) {
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 3,
@@ -53,10 +54,12 @@ export default function Home() {
 }
 
 //Configuração para resnderizar os dados somente depois que todas as informações foram carregadas.
-export const getServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const response = await stripe.products.list()
 
   console.log(response.data)
+
+  
   return {
     props: {
       list: [1, 2, 3]
