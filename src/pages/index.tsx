@@ -47,6 +47,9 @@ export default function Home({ products }: HomeProps) {
 }
 
 //Configuração para renderizar os dados somente depois que todas as informações foram carregadas.
+
+//GetStaticProps: configuração para deixar a aplicação estatica, paraser renderizada so uma vez.
+
 export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({
     expand: ['data.default_price']
