@@ -5,7 +5,6 @@ import { useKeenSlider } from 'keen-slider/react'
 import { HomeContainer, Product } from '../styles/pages/home'
 import { GetStaticProps } from 'next'
 
-
 import 'keen-slider/keen-slider.min.css'
 import { stripe } from '../lib/stripe'
 import Stripe from 'stripe'
@@ -15,7 +14,7 @@ interface HomeProps {
     id: string
     name: string
     imageUrl: string
-    price: number
+    price: string
   }[]
 }
 
@@ -30,14 +29,14 @@ export default function Home({ products }: HomeProps) {
     <HomeContainer ref={sliderRef} className="keen-slider">
       {products.map(product => {
         return (
-          <Link  href={`/product/${product.id}`} key={product.id} >
-           <Product className="keen-slider__slide">
-            <Image src={product.imageUrl} width={520} height={480} alt="" />
-            <footer>
-              <strong>{product.name}</strong>
-              <span>{product.price}</span>
-            </footer>
-          </Product>
+          <Link href={`/product/${product.id}`} key={product.id}>
+            <Product className="keen-slider__slide">
+              <Image src={product.imageUrl} width={520} height={480} alt="" />
+              <footer>
+                <strong>{product.name}</strong>
+                <span>{product.price}</span>
+              </footer>
+            </Product>
           </Link>
         )
       })}
@@ -67,7 +66,7 @@ export const getStaticProps: GetStaticProps = async () => {
       }).format(price.unit_amount / 100)
     }
   })
- 
+
   return {
     props: {
       products
