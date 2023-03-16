@@ -1,14 +1,16 @@
+import { stripe } from '@/src/lib/stripe'
 import {
   ImageContainer,
   ProductContainer,
   ProductDetails
 } from '@/src/styles/pages/product'
-import { GetStaticProps } from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next'
+import Image from 'next/image'
 
 import Stripe from 'stripe'
 
 interface ProductProps {
-  products: {
+  product: {
     id: string
     name: string
     imageUrl: string
@@ -21,7 +23,7 @@ export default function Product({ product }: ProductProps) {
   return (
     <ProductContainer>
       <ImageContainer>
-        <Image src={product.imageUrl} widt={520} height={480} alt="" />
+        <Image src={product.imageUrl} width={520} height={480} alt="" />
       </ImageContainer>
       <ProductDetails>
         <h1> {product.name}</h1>
@@ -31,6 +33,19 @@ export default function Product({ product }: ProductProps) {
       </ProductDetails>
     </ProductContainer>
   )
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {
+          id: 'prod_NU2yr1KrrLDRUO'
+        }
+      }
+    ],
+    fallback: 'blocking' //Configuração para mostrar as outras camisetas ao clicar.
+  }
 }
 
 export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
