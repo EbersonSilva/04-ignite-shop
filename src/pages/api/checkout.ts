@@ -1,7 +1,7 @@
 import { stripe } from "@/src/lib/stripe";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse){
+export default async function handler(req: NextApiRequest, res: NextApiResponse){
   const priceId = 'price_1Mj4szG6H8YGOox4J6U6S95x';
 
   const success_url = `${process.env.NEXT_URL}/success`
