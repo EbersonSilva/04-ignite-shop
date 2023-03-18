@@ -4,8 +4,10 @@ import {
   ProductContainer,
   ProductDetails
 } from '@/src/styles/pages/product'
+import axios from 'axios'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Image from 'next/image'
+import { useState } from 'react'
 
 import Stripe from 'stripe'
 
@@ -21,8 +23,25 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
-  function handleBuyProduct() {
-    console.log(product.defaultPriceId)
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
+    useState(false)
+  //Configuração para abrir o produto no stripe ao clicar no botão comprar.
+  async function handleBuyProduct() {
+    try {
+      setIsCreatingCheckoutSession(true)
+      const response = await axios.post('/api/checkout', {
+        priceId: product.defaultPriceId
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl
+    } catch (error) {
+      //Conectar com uma ferramenta de observabilidade ( Datadog / Sentry)
+
+      setIsCreatingCheckoutSession(false)
+      alert('Falha ao redirecionar ao checkout!')
+    }
   }
   return (
     <ProductContainer>
@@ -33,7 +52,9 @@ export default function Product({ product }: ProductProps) {
         <h1> {product.name}</h1>
         <span>{product.price}</span>
         <p>{product.description}</p>
-        <button onClick={handleBuyProduct}>Comprar Agora</button>
+        <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>
+          Comprar Agora
+        </button>
       </ProductDetails>
     </ProductContainer>
   )
