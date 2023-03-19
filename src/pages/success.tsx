@@ -1,17 +1,69 @@
+import { GetServerSideProps } from 'next'
+import Head from 'next/head'
+import Image from 'next/image'
 import Link from 'next/link'
+import Stripe from 'stripe'
+import { stripe } from '../lib/stripe'
 import { ImageContainer, SuccessContainer } from '../styles/pages/success'
+import Product from './product/[id]'
 
-export default function Success() {
+interface SuccessProps{
+  customerName: string;
+  product:{
+    name: string;
+    imageUrl: string;
+  }
+}
+
+export default function Success({customerName,product}: SuccessProps) {
   return (
+    <>
+    {/* Configuração para customizar a aba da pagina  */}
+    <Head>
+      <title>Compra efetuada | Ignite Shop</title>
+      {/* Configuração para essa pagina não ser indexada pelo google */}
+      <meta name='robots' content='noindex'/> 
+    </Head> 
     <SuccessContainer>
       <h1>Compra efetuada!</h1>
-      <ImageContainer></ImageContainer>
+      <ImageContainer>
+        <Image src={product.imageUrl} width={120} height={110} alt=""/>
+      </ImageContainer>
       <p>
-        Uhuul <strong>Eberson Silva</strong>, <strong></strong> sua Camisa ja
+        Uhuul <strong>{customerName}</strong>, <strong>{product.name}</strong> sua Camisa ja
         esta a caminho da sua casa
       </p>
       <Link href={'/'}>Voltar ao catalogo</Link>
     </SuccessContainer>
-    
+    </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ query, params }) => {
+  //configuração para redirecionar para a pagina inicial caso o session_Id não foi informado
+if (!query.session_id) {
+  return{
+    redirect:{
+      destination: '/',
+      permanent: false,
+    }
+
+  }
+}
+
+  const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    expand: ['line_items', 'line_items.data.price.product']
+  })
+  const customerName = session.customer_details.name;
+  const product = session.line_items.data[0].price.product as Stripe.Product  
+
+  return {
+    props:{
+      customerName,
+      product:{
+        name: product.name,
+        imageUrl: product.images[0],
+      }
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import Head from 'next/head'
 
 import { useKeenSlider } from 'keen-slider/react'
 import { HomeContainer, Product } from '../styles/pages/home'
@@ -26,7 +27,14 @@ export default function Home({ products }: HomeProps) {
     }
   })
   return (
+    <>
+    {/* Configuração para customizar a aba da pagina  */}
+    <Head>
+      <title>Home | Ignite Shop</title>
+    </Head>
+
     <HomeContainer ref={sliderRef} className="keen-slider">
+      
       {products.map(product => {
         return (
           <Link
@@ -45,6 +53,7 @@ export default function Home({ products }: HomeProps) {
         )
       })}
     </HomeContainer>
+    </>
   )
 }
 
